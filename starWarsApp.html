@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <title>Document</title>
+    <style>
+      * {
+        background-color: black;
+      }
+      #search_box {
+        width: 75%;
+        margin-left: 1%;
+        margin-top: 50px;
+        height: 50px;
+        background-color: rgb(65, 65, 65);
+        color: white;
+        font-size: 20px;
+        border-top-left-radius: 20px;
+        border-bottom-left-radius: 20px;
+        border: 0px;
+        float: left;
+      }
+      h1 {
+        margin-top: 0px;
+        margin-bottom: -5px;
+        text-align: center;
+        color: rgb(187, 169, 7);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+          "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+          "Helvetica Neue", sans-serif;
+      }
+      #div_box {
+        width: 85.5%;
+        height: 250px;
+        display: none;
+        margin-left: 1%;
+        overflow: auto;
+        background-color: rgb(65, 65, 65);
+        margin-bottom: 30px;
+        font-size: 20px;
+        color: white;
+        font-family: sans-serif;
+        padding-left: 20px;
+        font-size: 15px;
+        border-bottom-left-radius: 20px;
+        border: 0px;
+        float: left;
+        border-end-end-radius: 9px;
+        border-top: white 1px solid;
+      }
+      #search_box::placeholder {
+        color: rgb(219, 219, 219);
+        opacity: 1; /* Firefox */
+        padding-left: 20px;
+      }
+      #search_box:focus {
+        outline: none;
+      }
+
+      i:hover {
+        cursor: pointer;
+      }
+      /* width */
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      /* Track */
+      ::-webkit-scrollbar-track {
+        background: rgb(65, 65, 65);
+        border-radius: 90px;
+      }
+
+      /* Handle */
+      ::-webkit-scrollbar-thumb {
+        background: #888;
+      }
+
+      /* Handle on hover */
+      ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      style="
+        margin: auto;
+        margin-top: 100px;
+        width: 50%;
+        height: 300px;
+        background-color: rgb(0, 0, 0);
+      "
+    >
+      <img
+        style="margin-left: 28%; margin-right: auto; height: 30%"
+        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXWJ5MqTvS7t6nxIXgjSNjYy1BCQ66r2NQVQ&usqp=CAU"
+        id="img"
+      />
+
+      <input
+        type="text"
+        name=""
+        placeholder="Search Characters"
+        id="search_box"
+        oninput="throttleFuction()"
+      />
+
+      <i
+        id="search"
+        class="material-icons"
+        style="
+          color: white;
+          float: left;
+          border-end-end-radius: 20px;
+          border-top-right-radius: 20px;
+          padding-left: 19px;
+          padding-top: 12px;
+          margin-top: 50px;
+          height: 40px;
+          width: 10%;
+          background-color: rgb(65, 65, 65);
+        "
+        >search</i
+      >
+      <div id="div_box"></div>
+    </div>
+  </body>
+</html>
+<script>
+  let movies_div = document.getElementById("div_box");
+  let query = document.getElementById("search_box").value;
+  var timerId;
+  async function searchMovies() {
+    let query = document.getElementById("search_box").value;
+
+    let res = await fetch(`https:swapi.dev/api/people/?search=${query}
+`);
+    let data = await res.json();
+    return data.results;
+  }
+
+  function throttleFuction() {
+    if (timerId) {
+      return false;
+    }
+    timerId = setTimeout(() => {
+      main();
+      timerId = undefined;
+    }, 500);
+    console.log(timerId);
+  }
+  function appendMovies(d) {
+    movies_div.innerHTML = null;
+    d.forEach(({ name }) => {
+      let p = document.createElement("p");
+      p.innerText = name;
+      p.style.backgroundColor = "rgb(65, 65, 65)";
+      p.addEventListener("mouseover", function () {
+        p.style.color = "yellow";
+      });
+      p.addEventListener("mouseout", function () {
+        p.style.color = "white";
+      });
+      movies_div.append(p);
+    });
+  }
+
+  async function main() {
+    let movies = await searchMovies();
+    movies_div.style.display = "block";
+    var search_box = document.getElementById("search_box");
+    search_box.style.borderBottomLeftRadius = "0px";
+    document.getElementById("search").style.borderBottomRightRadius = "0px";
+    console.log(movies);
+    appendMovies(movies);
+  }
+</script>
